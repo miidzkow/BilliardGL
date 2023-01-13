@@ -87,9 +87,8 @@ int main(int argc, char* argv[])
     Shader shader(sourceV, sourceF);
 
     char path[] = PATH_TO_OBJECTS "/table.obj";
-    char path_mtl[] = PATH_TO_OBJECTS "/table.mtl";
 
-    Object cube(path, path_mtl);
+    Object cube(path);
     cube.makeObject(shader);
 
 

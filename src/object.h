@@ -13,9 +13,6 @@
 
 #include <glm/glm.hpp>
 #include<glm/gtc/matrix_transform.hpp>
-#include "shader.h"
-#include "stb_image.h"
-
 
 
 /*Principe :
@@ -49,7 +46,7 @@ public:
     glm::mat4 model = glm::mat4(1.0);
 
 
-    Object(const char* path, const char* mtl_path) {
+    Object(const char* path) {
 
         std::ifstream infile(path);
         //TODO Error management
@@ -99,7 +96,7 @@ public:
                 v1.Texture = textures.at(std::stof(t) - 1);
                 vertices.push_back(v1);
 
-                //for face 2
+                //for face 12
                 Vertex v2;
 
                 p = f2.substr(0, f2.find("/"));
@@ -134,64 +131,6 @@ public:
                 vertices.push_back(v3);
             }
         }
-
-
-        std::vector<std::string> texturePaths;
-        std::vector<GLuint> textures;
-
-// Load the .mtl file
-        std::ifstream mtlFile(mtl_path);
-        std::string line2;
-        while (std::getline(mtlFile, line2)) {
-            std::istringstream iss(line2);
-            std::string command;
-            iss >> command;
-            if (command == "map_Kd") {
-                std::string path;
-                iss >> path;
-                texturePaths.push_back(path);
-            }
-        }
-
-        // Load the textures
-        for (const std::string& path : texturePaths) {
-            GLuint texture;
-            glGenTextures(1, &texture);
-            glBindTexture(GL_TEXTURE_2D, texture);
-
-            // Set the texture parameters
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-            // Load the image data
-            int width, height, numChannels;
-            unsigned char* data = stbi_load(path.c_str(), &width, &height, &numChannels, 0);
-
-            if (data) {
-                GLenum format;
-                if (numChannels == 1) {
-                    format = GL_RED;
-                } else if (numChannels == 3) {
-                    format = GL_RGB;
-                } else if (numChannels == 4) {
-                    format = GL_RGBA;
-                }
-
-                // Upload the texture data to the GPU
-                glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-                glGenerateMipmap(GL_TEXTURE_2D);
-            } else {
-                std::cout << "Failed to load texture: " << path << std::endl;
-            }
-
-            stbi_image_free(data);
-            textures.push_back(texture);
-        }
-
-
-
         //std::cout << positions.size() << std::endl;
         //std::cout << normals.size() << std::endl;
         //std::cout << textures.size() << std::endl;
