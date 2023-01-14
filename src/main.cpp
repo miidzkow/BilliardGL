@@ -25,7 +25,7 @@ const unsigned int SCR_WIDTH = 1500;
 const unsigned int SCR_HEIGHT = 1500;
 
 // camera
-Camera camera(glm::vec3(0.0f, 1.0f, 2.0f));
+Camera camera(glm::vec3(0.0f, 8.0f, 17.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -90,7 +90,7 @@ int main()
     // -----------
     Model ourModel("../models/table/pooltable.obj");
 
-    Model roomModel("../models/room/room2.obj");
+    Model roomModel("../models/room/room.obj");
 
 
     // draw in wireframe
@@ -132,8 +132,6 @@ int main()
         ourModel.Draw(ourShader);
 
         glm::mat4 model2 = glm::mat4(1.0f);
-        model2 = glm::translate(model2, glm::vec3(0.0f, 0.0f, 0.0f));
-        model2 = glm::scale(model2, glm::vec3(10.0f, 10.0f, 10.0f));
         roomShader.setMatrix4("model2", model2);
         roomModel.Draw(roomShader);
 
