@@ -18,23 +18,16 @@ option(GLFW_BUILD_DOCS OFF)
 option(GLFW_BUILD_EXAMPLES OFF)
 option(GLFW_BUILD_TESTS OFF)
 add_subdirectory(3rdParty/glfw)
+add_subdirectory(3rdParty/assimp)
 
 
-# Assimp
-set(BUILD_SHARED_LIBS OFF CACHE INTERNAL "" FORCE)
-set(ASSIMP_BUILD_TESTS OFF CACHE INTERNAL "" FORCE)
-set(ASSIMP_NO_EXPORT ON CACHE INTERNAL "" FORCE)
-set(ASSIMP_BUILD_TESTS OFF CACHE INTERNAL "" FORCE)
-set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE INTERNAL "" FORCE)
-configure_file("${PROJECT_SOURCE_DIR}/3rdparty/assimp/include/assimp/config.h.in" "${PROJECT_SOURCE_DIR}/3rdparty/assimp/include/assimp/config.h")
-configure_file("${PROJECT_SOURCE_DIR}/3rdparty/assimp/contrib/zlib/zconf.h.cmakein" "3rdparty/assimp/contrib/zlib/zconf.h")
 
 target_link_libraries(glad glfw ${OPENGL_LIBRARIES} assimp)
 
 include_directories(3rdParty/glad/include/
         3rdParty/glfw/include/
         3rdParty/glm/
-        3rdParty/assimp/include
+        3rdParty/assimp/include/
         3rdParty/stb/
         models/
         textures/
