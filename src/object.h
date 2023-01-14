@@ -14,6 +14,7 @@
 #include <glm/glm.hpp>
 #include<glm/gtc/matrix_transform.hpp>
 
+#include "mesh.h"
 
 /*Principe :
 * On donne le path du fichier -> on lit le fichier
@@ -24,11 +25,6 @@
 * en gros sotck les data dans une frome de tableau
 */
 
-struct Vertex {
-    glm::vec3 Position;
-    glm::vec2 Texture;
-    glm::vec3 Normal;
-};
 
 
 class Object
@@ -93,7 +89,7 @@ public:
 
                 v1.Position = positions.at(std::stof(p) - 1);
                 v1.Normal = normals.at(std::stof(n) - 1);
-                v1.Texture = textures.at(std::stof(t) - 1);
+                v1.TexCoords = textures.at(std::stof(t) - 1);
                 vertices.push_back(v1);
 
                 //for face 12
@@ -110,7 +106,7 @@ public:
 
                 v2.Position = positions.at(std::stof(p) - 1);
                 v2.Normal = normals.at(std::stof(n) - 1);
-                v2.Texture = textures.at(std::stof(t) - 1);
+                v2.TexCoords = textures.at(std::stof(t) - 1);
                 vertices.push_back(v2);
 
                 //for face 3
@@ -127,7 +123,7 @@ public:
 
                 v3.Position = positions.at(std::stof(p) - 1);
                 v3.Normal = normals.at(std::stof(n) - 1);
-                v3.Texture = textures.at(std::stof(t) - 1);
+                v3.TexCoords = textures.at(std::stof(t) - 1);
                 vertices.push_back(v3);
             }
         }
@@ -156,8 +152,8 @@ public:
             data[i * 8 + 1] = v.Position.y;
             data[i * 8 + 2] = v.Position.z;
 
-            data[i * 8 + 3] = v.Texture.x;
-            data[i * 8 + 4] = v.Texture.y;
+            data[i * 8 + 3] = v.TexCoords.x;
+            data[i * 8 + 4] = v.TexCoords.y;
 
             data[i * 8 + 5] = v.Normal.x;
             data[i * 8 + 6] = v.Normal.y;

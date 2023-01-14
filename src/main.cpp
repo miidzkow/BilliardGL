@@ -5,15 +5,19 @@
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
-#include<glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include<glm/gtc/type_ptr.hpp>
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
 
 #include "camera.h"
 #include "shader.h"
 #include "object.h"
+#include "model.h"
+
+
+// timing
+float deltaTime = 0.0f;
+float lastFrame = 0.0f;
 
 
 const int width = 2000;
@@ -59,37 +63,12 @@ int main(int argc, char* argv[])
 
     glEnable(GL_DEPTH_TEST);
 
-
-    const std::string sourceV = "#version 330 core\n"
-                                "in vec3 position; \n"
-                                "in vec2 tex_coord; \n"
-                                "in vec3 normal; \n"
-                                "out vec4 v_col; \n"
-                                "out vec2 v_t; \n"
-                                "uniform mat4 M; \n"
-                                "uniform mat4 V; \n"
-                                "uniform mat4 P; \n"
-                                " void main(){ \n"
-                                "gl_Position = P*M*V*vec4(position, 1);\n"
-                                "v_col = vec4(normal*0.5 + 0.5, 1.0);\n"
-                                "v_t = tex_coord; \n"
-                                "}\n";
-    const std::string sourceF = "#version 330 core\n"
-                                "out vec4 FragColor;"
-                                "precision mediump float; \n"
-                                "in vec4 v_col; \n"
-                                "in vec2 v_t; \n"
-                                "void main() { \n"
-                                "FragColor = v_col*(1.0-v_t.y); \n"
-                                "} \n";
+    Shader ourShader("pooltable.vs", "pooltable.fs");
 
 
-    Shader shader(sourceV, sourceF);
+    char path[] = PATH_TO_OBJECTS "/pooltable.obj";
 
-    char path[] = PATH_TO_OBJECTS "/table.obj";
-
-    Object cube(path);
-    cube.makeObject(shader);
+    Model ourModel(path);
 
 
 
@@ -121,26 +100,42 @@ int main(int argc, char* argv[])
     //Rendering
 
     while (!glfwWindowShouldClose(window)) {
+
+        // per-frame time logic
+        // --------------------
+        float currentFrame = static_cast<float>(glfwGetTime());
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
+        // input
+        // -----
         processInput(window);
-        view = camera.GetViewMatrix();
-        glfwPollEvents();
-        double now = glfwGetTime();
-        glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+
+        // render
+        // ------
+        glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
+
+        view = camera.GetViewMatrix();
+        double now = glfwGetTime();
+
+
         // Use the shader Class to send the uniform
-        shader.use();
+        ourShader.use();
 
-        shader.setMatrix4("M", model);
-        shader.setMatrix4("V", view);
-        shader.setMatrix4("P", perspective);
+        ourShader.setMatrix4("M", model);
+        ourShader.setMatrix4("V", view);
+        ourShader.setMatrix4("P", perspective);
 
 
-        cube.draw();
+        ourModel.Draw(ourShader);
 
         fps(now);
         glfwSwapBuffers(window);
+        glfwPollEvents();
+
     }
 
     //clean up ressource

@@ -11,10 +11,10 @@
 class Shader
 {
 public:
-	GLuint ID;
+    GLuint ID;
 
-	Shader(const char* vertexPath, const char* fragmentPath)
-	{
+    Shader(const char* vertexPath, const char* fragmentPath)
+    {
         // 1. retrieve the vertex/fragment source code from filePath
         std::string vertexCode;
         std::string fragmentCode;
@@ -49,7 +49,7 @@ public:
         GLuint vertex = compileShader(vertexCode, GL_VERTEX_SHADER);
         GLuint fragment = compileShader(fragmentCode, GL_FRAGMENT_SHADER);
         ID = compileProgram(vertex, fragment);
-	}
+    }
 
     Shader(std::string vShaderCode, std::string fShaderCode)
     {
