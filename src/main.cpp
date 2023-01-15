@@ -11,7 +11,6 @@
 
 #include "camera.h"
 #include "shader.h"
-#include "object.h"
 #include "model.h"
 
 
@@ -30,9 +29,10 @@ float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
 
-// timing
-float deltaTime = 0.0f;
-float lastFrame = 0.0f;
+
+
+glm::vec3 lightPos(0.0f, 4.0f, 0.0f);
+
 
 
 int main()
@@ -44,9 +44,6 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-#ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
 
     // glfw window creation
     // --------------------
@@ -82,9 +79,9 @@ int main()
 
     // build and compile shaders
     // -------------------------
-    Shader ourShader("../models/pooltable.vs", "../models/pooltable.fs");
+    Shader ourShader("../models/room/roomShader.vs", "../models/room/roomShader.fs");
 
-    Shader roomShader("../models/pooltable.vs", "../models/pooltable.fs");
+    Shader roomShader("../models/room/roomShader.vs", "../models/room/roomShader.fs");
 
     // load models
     // -----------
@@ -92,19 +89,12 @@ int main()
 
     Model roomModel("../models/room/room.obj");
 
-
-    // draw in wireframe
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    const glm::vec3 light_pos = glm::vec3(0.0, 3.0, 0.0);
 
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window))
     {
-        // per-frame time logic
-        // --------------------
-        float currentFrame = static_cast<float>(glfwGetTime());
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
 
         // input
         // -----
@@ -117,6 +107,7 @@ int main()
 
         // don't forget to enable shader before setting uniforms
         ourShader.use();
+        roomShader.use();
 
         // view/projection transformations
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
@@ -124,15 +115,34 @@ int main()
         ourShader.setMatrix4("projection", projection);
         ourShader.setMatrix4("view", view);
 
+        roomShader.setMatrix4("projection", projection);
+        roomShader.setMatrix4("view", view);
+
+
+        ourShader.setVector3f("objectColor", 1.0f, 0.5f, 0.31f);
+        ourShader.setVector3f("lightColor", 1.0f, 1.0f, 1.0f);
+        ourShader.setVector3f("lightPos", lightPos);
+        ourShader.setVector3f("view", camera.Position);
+        ourShader.setFloat("intensity", 5.0f);
+
+        roomShader.setVector3f("objectColor", 1.0f, 0.5f, 0.31f);
+        roomShader.setVector3f("lightColor", 1.0f, 1.0f, 1.0f);
+        roomShader.setVector3f("lightPos", lightPos);
+        roomShader.setVector3f("view", camera.Position);
+        roomShader.setFloat("intensity", 5.0f);
+
+
         // render the loaded model
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // position in the scene
-        model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));     // scale
-        ourShader.setMatrix4("model", model);
+        glm::mat4 pooltable = glm::mat4(1.0f);
+        pooltable = glm::translate(pooltable, glm::vec3(0.0f, 0.0f, 0.0f)); // position in the scene
+        pooltable = glm::scale(pooltable, glm::vec3(10.0f, 10.0f, 10.0f));     // scale
+        ourShader.setMatrix4("model", pooltable);
         ourModel.Draw(ourShader);
 
-        glm::mat4 model2 = glm::mat4(1.0f);
-        roomShader.setMatrix4("model2", model2);
+        glm::mat4 room = glm::mat4(1.0f);
+        room = glm::translate(room, glm::vec3(0.0f, 0.0f, 0.0f)); // position in the scene
+        room = glm::scale(room, glm::vec3(15.0f, 15.0f, 15.0f));     // scale
+        roomShader.setMatrix4("model", room);
         roomModel.Draw(roomShader);
 
 

@@ -30,7 +30,6 @@ include_directories(3rdParty/glad/include/
         3rdParty/assimp/include/
         3rdParty/stb/
         models/
-        textures/
         src/)
 
 
