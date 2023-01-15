@@ -31,7 +31,7 @@ bool firstMouse = true;
 
 
 
-glm::vec3 lightPos(0.0f, 4.0f, 0.0f);
+glm::vec3 lightPos(0.0f, 15.0f, 0.0f);
 
 
 
@@ -109,6 +109,34 @@ int main()
         ourShader.use();
         roomShader.use();
 
+
+        // light properties
+        glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
+        glm::vec3 diffuseColor = lightColor   * glm::vec3(0.5f); // decrease the influence
+        glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); // low influence
+        ourShader.setVector3f("light.ambient", ambientColor * 10.0f);
+        ourShader.setVector3f("light.diffuse", diffuseColor * 10.0f);
+        ourShader.setVector3f("light.specular", 1.0f, 1.0f, 1.0f);
+
+        // material properties
+        ourShader.setVector3f("material.ambient", 1.0f, 0.5f, 0.31f);
+        ourShader.setVector3f("material.diffuse", 1.0f, 0.5f, 0.31f);
+        ourShader.setVector3f("material.specular", 0.5f, 0.5f, 0.5f); // specular lighting doesn't have full effect on this object's material
+        ourShader.setFloat("material.shininess", 32.0f);
+
+
+        roomShader.setVector3f("light.ambient", ambientColor * 10.0f);
+        roomShader.setVector3f("light.diffuse", diffuseColor * 10.0f);
+        roomShader.setVector3f("light.specular", 1.0f, 1.0f, 1.0f);
+
+        // material properties
+        roomShader.setVector3f("material.ambient", 1.0f, 0.5f, 0.31f);
+        roomShader.setVector3f("material.diffuse", 1.0f, 0.5f, 0.31f);
+        roomShader.setVector3f("material.specular", 0.5f, 0.5f, 0.5f); // specular lighting doesn't have full effect on this object's material
+        roomShader.setFloat("material.shininess", 32.0f);
+
+
+
         // view/projection transformations
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
@@ -119,17 +147,13 @@ int main()
         roomShader.setMatrix4("view", view);
 
 
-        ourShader.setVector3f("objectColor", 1.0f, 0.5f, 0.31f);
         ourShader.setVector3f("lightColor", 1.0f, 1.0f, 1.0f);
-        ourShader.setVector3f("lightPos", lightPos);
-        ourShader.setVector3f("view", camera.Position);
-        ourShader.setFloat("intensity", 5.0f);
+        ourShader.setVector3f("light.position", lightPos);
+        ourShader.setVector3f("viewPos", camera.Position);
 
-        roomShader.setVector3f("objectColor", 1.0f, 0.5f, 0.31f);
         roomShader.setVector3f("lightColor", 1.0f, 1.0f, 1.0f);
-        roomShader.setVector3f("lightPos", lightPos);
-        roomShader.setVector3f("view", camera.Position);
-        roomShader.setFloat("intensity", 5.0f);
+        roomShader.setVector3f("light.position", lightPos);
+        roomShader.setVector3f("viewPos", camera.Position);
 
 
         // render the loaded model
@@ -147,19 +171,16 @@ int main()
 
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-        // -------------------------------------------------------------------------------
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
-    // ------------------------------------------------------------------
     glfwTerminate();
     return 0;
 }
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
-// ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow *window)
 {
     // Use the cameras class to change the parameters of the camera
@@ -189,7 +210,6 @@ void processInput(GLFWwindow *window)
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
-// ---------------------------------------------------------------------------------------------
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     // make sure the viewport matches the new window dimensions; note that width and
@@ -198,7 +218,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 }
 
 // glfw: whenever the mouse moves, this callback is called
-// -------------------------------------------------------
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 {
     float xpos = static_cast<float>(xposIn);
