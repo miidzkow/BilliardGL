@@ -87,7 +87,7 @@ int main()
     // -----------
     Model ourModel("../models/table/pooltable.obj");
 
-    Model roomModel("../models/room/room.obj");
+    Model roomModel("../models/room/EmptyRoom(OBJ).obj");
 
     const glm::vec3 light_pos = glm::vec3(0.0, 3.0, 0.0);
 
@@ -121,7 +121,7 @@ int main()
         // material properties
         ourShader.setVector3f("material.ambient", 1.0f, 0.5f, 0.31f);
         ourShader.setVector3f("material.diffuse", 1.0f, 0.5f, 0.31f);
-        ourShader.setVector3f("material.specular", 0.5f, 0.5f, 0.5f); // specular lighting doesn't have full effect on this object's material
+        ourShader.setVector3f("material.specular", 0.5f, 0.5f, 0.5f);
         ourShader.setFloat("material.shininess", 32.0f);
 
 
@@ -132,7 +132,7 @@ int main()
         // material properties
         roomShader.setVector3f("material.ambient", 1.0f, 0.5f, 0.31f);
         roomShader.setVector3f("material.diffuse", 1.0f, 0.5f, 0.31f);
-        roomShader.setVector3f("material.specular", 0.5f, 0.5f, 0.5f); // specular lighting doesn't have full effect on this object's material
+        roomShader.setVector3f("material.specular", 0.5f, 0.5f, 0.5f);
         roomShader.setFloat("material.shininess", 32.0f);
 
 
