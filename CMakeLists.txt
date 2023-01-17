@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(BillardGL)
+project(BilliardGL)
 
 set(CMAKE_CXX_STANDARD 14)
 
@@ -36,9 +36,9 @@ include_directories(3rdParty/glad/include/
 
 file(GLOB_RECURSE SOURCE_FILES src/*.cpp)
 
-add_executable(BillardGL ${SOURCE_FILES})
+add_executable(BilliardGL ${SOURCE_FILES})
 
-target_link_libraries(BillardGL glad glfw ${OPENGL_LIBRARIES})
+target_link_libraries(BilliardGL glad glfw ${OPENGL_LIBRARIES})
 
 add_compile_definitions(PATH_TO_OBJECTS="${CMAKE_CURRENT_SOURCE_DIR}/models")
 add_compile_definitions(PATH_TO_TEXTURE="${CMAKE_CURRENT_SOURCE_DIR}/textures")

@@ -19,8 +19,8 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
 
 // Display size
-const unsigned int SCR_WIDTH = 1000;
-const unsigned int SCR_HEIGHT = 1000;
+const unsigned int SCR_WIDTH = 1920;
+const unsigned int SCR_HEIGHT = 1080;
 
 // Camera (with initial position)
 Camera camera(glm::vec3(0.0f, 10.0f, 20.0f));
@@ -41,7 +41,7 @@ int main()
 
 
     // glfw window creation
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "BillardGL", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "BilliardGL", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -76,6 +76,8 @@ int main()
 
     // Position the light
     const glm::vec3 light_pos = glm::vec3(0.0, 3.0, 0.0);
+
+    glfwSwapInterval(1);
 
     // Main render loop
     while (!glfwWindowShouldClose(window))
