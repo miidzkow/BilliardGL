@@ -67,11 +67,14 @@ int main()
     // Shaders (as for now, roomShader=tableShader but duplicated for future proofing)
     Shader tableShader("../models/table/tableShader.vs", "../models/table/tableShader.fs");
     Shader roomShader("../models/room/roomShader.vs", "../models/room/roomShader.fs");
+    Shader reflectiveBallShader("../models/balls/ballShader.vs", "../models/balls/ballShader.fs");
 
     // Models
     Model tableModel("../models/table/pooltable.obj");
     Model roomModel("../models/room/room.obj");
+    Model reflectiveBallModel("../models/balls/sphere.obj");
 
+    // Position the light
     const glm::vec3 light_pos = glm::vec3(0.0, 3.0, 0.0);
 
     // Main render loop
@@ -87,6 +90,7 @@ int main()
 
         tableShader.use();
         roomShader.use();
+        reflectiveBallShader.use();
 
         // Set everything for the table
         // light properties
@@ -117,6 +121,18 @@ int main()
         roomShader.setFloat("material.shininess", 32.0f);
 
 
+        // Set everything for the reflective ball
+        // light properties
+        reflectiveBallShader.setVector3f("light.ambient", ambientColor * 7.0f);
+        reflectiveBallShader.setVector3f("light.diffuse", diffuseColor * 7.0f);
+        reflectiveBallShader.setVector3f("light.specular", 1.0f, 1.0f, 1.0f);
+
+        // material properties
+        reflectiveBallShader.setVector3f("material.ambient", 1.0f, 0.5f, 0.31f);
+        reflectiveBallShader.setVector3f("material.diffuse", 1.0f, 0.5f, 0.31f);
+        reflectiveBallShader.setVector3f("material.specular", 0.5f, 0.5f, 0.5f);
+        reflectiveBallShader.setFloat("material.shininess", 32.0f);
+
 
         // view & projection transformations
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
@@ -127,6 +143,9 @@ int main()
         roomShader.setMatrix4("projection", projection);
         roomShader.setMatrix4("view", view);
 
+        reflectiveBallShader.setMatrix4("projection", projection);
+        reflectiveBallShader.setMatrix4("view", view);
+
 
         tableShader.setVector3f("lightColor", 1.0f, 1.0f, 1.0f);
         tableShader.setVector3f("light.position", lightPos);
@@ -136,6 +155,10 @@ int main()
         roomShader.setVector3f("light.position", lightPos);
         roomShader.setVector3f("viewPos", camera.Position);
 
+        reflectiveBallShader.setVector3f("lightColor", 1.0f, 1.0f, 1.0f);
+        reflectiveBallShader.setVector3f("light.position", lightPos);
+        reflectiveBallShader.setVector3f("viewPos", camera.Position);
+        reflectiveBallShader.setFloat("Material.refractionIndex", 0.2f);
 
         // Render the pool table
         glm::mat4 pooltable = glm::mat4(1.0f);
@@ -151,6 +174,12 @@ int main()
         roomShader.setMatrix4("model", room);
         roomModel.Draw(roomShader);
 
+        // Render the reflective ball
+        glm::mat4 reflectiveBall = glm::mat4(1.0f);
+        reflectiveBall = glm::translate(reflectiveBall, glm::vec3(4.0f, 2.9f, 1.5f)); // position in the scene
+        reflectiveBall = glm::scale(reflectiveBall, glm::vec3(0.3f, 0.3f, 0.3f));     // scale
+        reflectiveBallShader.setMatrix4("model", reflectiveBall);
+        reflectiveBallModel.Draw(reflectiveBallShader);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         glfwSwapBuffers(window);
